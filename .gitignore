@@ -2,6 +2,7 @@
 node_modules
 /dist
 /server/credentials.json
+/server/token.pickle
 
 # local env files
 .env.local

@@ -79,7 +79,7 @@ def main():
         #print(event)
         print(start, event['summary'])
     
-    with open('eventlist.json', 'w') as f:
+    with open('../public/eventlist.json', 'w') as f:
         json.dump(newEventArray, f) 
 
 if __name__ == '__main__':
