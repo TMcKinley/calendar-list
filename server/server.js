@@ -18,8 +18,6 @@ app.post("/api/save", (req, res) => {
     let dataObject = dataArray.find(obj => obj.id === req.body.id);
     dataObject.completed = 1;
 
-    //console.log(dataObject);
-
     fs.writeFile(
       "../dist/eventlist.json",
       JSON.stringify(dataArray),
@@ -30,6 +28,34 @@ app.post("/api/save", (req, res) => {
         }
 
         return res.json(req.body);
+      }
+    );
+  });
+});
+
+app.post("/api/reset", (req, res) => {
+  fs.readFile("../dist/eventlist.json", "utf8", function(err, data) {
+    if (err) {
+      return console.log(err);
+    }
+
+    let dataArray = JSON.parse(data);
+    let filteredArray = dataArray.map(obj => {
+      obj.completed = 0;
+
+      return obj;
+    });
+
+    fs.writeFile(
+      "../dist/eventlist.json",
+      JSON.stringify(filteredArray),
+      "utf8",
+      function(err) {
+        if (err) {
+          return console.log(err);
+        }
+
+        return res.json({ success: true });
       }
     );
   });

@@ -8,6 +8,12 @@
               <v-toolbar-title class="headline">
                 Calendar Checklist
               </v-toolbar-title>
+
+              <v-spacer></v-spacer>
+
+              <v-btn color="red darken-4" @click="onResetTaskClick">
+                <v-icon left>fas fa-sync</v-icon>Reset Tasks
+              </v-btn>
             </v-toolbar>
 
             <div class="d-flex">
@@ -104,6 +110,24 @@ export default {
           this.todos = data;
 
           this.hideLoading();
+        });
+    },
+    onResetTaskClick: function() {
+      this.showLoading("Resetting Events...");
+
+      fetch("/api/reset", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => {
+          return response.json();
+        })
+        .then(() => {
+          this.hideLoading();
+
+          this.fetchData();
         });
     }
   },
