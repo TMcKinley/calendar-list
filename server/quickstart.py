@@ -65,11 +65,13 @@ def main():
     if not events:
         print('No upcoming events found.')
     for event in events:
+        id = event['id']
         start = event['start'].get('dateTime', event['start'].get('date'))
         end = event['end'].get('dateTime', event['end'].get('date'))
         description = event['summary']
 
         newEventArray.append({
+            'id': id,
             'start_time': start,
             'end_time': end,
             'description': description,
@@ -80,6 +82,8 @@ def main():
         print(start, event['summary'])
     
     with open('../public/eventlist.json', 'w') as f:
+        json.dump(newEventArray, f) 
+    with open('../dist/eventlist.json', 'w') as f:
         json.dump(newEventArray, f) 
 
 if __name__ == '__main__':

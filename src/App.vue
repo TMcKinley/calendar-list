@@ -15,13 +15,19 @@
                 :style="leftStyleObject"
                 :date="currentDate"
                 :todos="todos"
+                @refresh_todo="onRefreshEvent"
               ></TodoList>
               <TodoList
                 :style="rightStyleObject"
                 :date="nextDate"
                 :todos="todos"
+                @refresh_todo="onRefreshEvent"
               ></TodoList>
             </div>
+            <SimpleLoadingDialog
+              v-if="showLoadingDialog"
+              :dialogText="loadingDialogText"
+            />
           </v-card>
         </v-layout>
       </v-container>
@@ -31,10 +37,13 @@
 
 <script>
 import TodoList from "./components/TodoList";
+import SimpleLoadingDialog from "./components/SimpleLoadingDialog.vue";
+import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
-    TodoList
+    TodoList,
+    SimpleLoadingDialog
   },
 
   data() {
@@ -44,6 +53,8 @@ export default {
   },
 
   computed: {
+    ...mapState(["showLoadingDialog", "loadingDialogText"]),
+
     leftStyleObject: function() {
       let obj = {};
       obj.flex = "70";
@@ -74,21 +85,33 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["showLoading", "hideLoading"]),
+
     isWeekend: function(rawDate) {
       return rawDate.getDay() === 6 || rawDate.getDay() === 0;
+    },
+    onRefreshEvent: function() {
+      this.fetchData();
+    },
+    fetchData: function() {
+      this.showLoading("Retrieving Events...");
+
+      fetch("eventlist.json")
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          this.todos = data;
+
+          this.hideLoading();
+        });
     }
   },
   created() {
     this.$vuetify.theme.dark = true;
   },
   mounted: function() {
-    fetch("eventlist.json")
-      .then(response => {
-        return response.json();
-      })
-      .then(data => {
-        this.todos = data;
-      });
+    this.fetchData();
   }
 };
 </script>

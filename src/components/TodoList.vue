@@ -38,6 +38,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   props: {
     date: {
@@ -79,6 +81,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["showLoading", "hideLoading"]),
+
     calculateDate: function() {
       const date = this.date;
       const formatter = new Intl.DateTimeFormat("en-US", {
@@ -118,9 +122,24 @@ export default {
       }
     },
     onCheckClick: function(dataObject, $event) {
-      if (dataObject.completed === 0) {
-        dataObject.completed = 1;
-      }
+      this.showLoading("Saving Event...");
+
+      fetch("/api/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: dataObject.id })
+      })
+        .then(response => {
+          return response.json();
+        })
+        .then(() => {
+          this.hideLoading();
+
+          this.$emit("refresh_todo");
+        });
+
       $event.preventDefault();
       $event.stopPropagation();
     }
