@@ -42,7 +42,7 @@ def main():
     tzinfo = datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo
     today = datetime.datetime.now().replace(hour=0,minute=0,second=0,microsecond=0,tzinfo=tzinfo).isoformat()
     #tomorrow = datetime.date.today() + datetime.timedelta(days=1)
-    tomorrow = (datetime.datetime.today() + datetime.timedelta(days=7)).replace(hour=0,minute=0,second=0,microsecond=0,tzinfo=tzinfo).isoformat()
+    tomorrow = (datetime.datetime.today() + datetime.timedelta(days=30)).replace(hour=0,minute=0,second=0,microsecond=0,tzinfo=tzinfo).isoformat()
 
     print(today)
     print(tomorrow)
@@ -55,7 +55,7 @@ def main():
         calendarId='n64tt3v1qmpm3eko90duvn7s2s@group.calendar.google.com',
         timeMin=today,
         timeMax=tomorrow,
-        maxResults=50,
+        maxResults=250,
         singleEvents=True,
         orderBy='startTime').execute()
     events = events_result.get('items', [])
